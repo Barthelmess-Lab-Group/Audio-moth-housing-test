@@ -1,0 +1,16 @@
+---
+title: "dealing with folders"
+format: html
+---
+
+Set things up
+```{r}
+rm(list = ls())
+library(tidyverse)
+library(here)
+```
+
+Our intention is to be able to read in a bunch of csv files that are outputs from BirdNet and evaluate them.
+
+Now tweak this
+
