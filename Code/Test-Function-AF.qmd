@@ -1,0 +1,36 @@
+---
+title: "Test-Function_AF"
+format: html
+---
+
+Set things up
+```{r}
+rm(list = ls())
+library(tidyverse)
+library(here)
+```
+
+Here is where I am going to test different functions that will help me to figure out how to make the final function
+
+I will use some more simplistic functions and stuff to test these
+
+First try:
+
+```{r}
+combined_csv <- function(path = "."){
+  # create a list of all the csv files in the given directory
+  # use list.files() and make it recursive to go through sub-directories
+  csv_list <- list.files(path = path, recursive = TRUE, pattern = "//.csv$", full.names = TRUE)
+  
+  # read in each csv in the list
+  df_list <- lapply(csvs, read.csv)
+  
+  # combine all the data frames in the list
+  # this only works if all the columns are the same
+  combined_df <- do.call(rbind, df_list)
+  
+  return(combined_df)
+}
+```
+
+
