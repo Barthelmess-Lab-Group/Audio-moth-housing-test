@@ -20,10 +20,11 @@ First try:
 combine_csv <- function(path){
   # create a list of all the csv files in the given directory
   # use list.files() and make it recursive to go through sub-directories
+  # \\.csv$ looks for files with the .csv at the end of the file path
   csv_list <- list.files(path = path, recursive = TRUE, pattern = "\\.csv$", full.names = TRUE) |> 
-    lapply(read.csv) |>  
-    bind_rows()
-  return(csv_list)
+    lapply(read.csv) |>  # read in all the csvs
+    bind_rows() # this appends all the dataframes
+  return(csv_list) 
 }
 ```
 
@@ -32,19 +33,36 @@ Create a dummy "data" directory and some csv files for testing:
 
 ```{r}
 dir.create("temp")
-dir.create("temp/subdir1")
-dir.create("temp/subdir2")
+dir.create("temp/baggie")
+dir.create("temp/case")
+
+# baggie folder
+dir.create("temp/baggie/A004_SD001")
+# A004_SD001 subfolder]
+dir.create("temp/baggie/A004_SD001/33333")
+
+# case folder
+dir.create("temp/case/A005_SD020")
+dir.create("temp/case/A006_SD021")
+# A005_SD020 subfolder
+dir.create("temp/case/A005_SD020/222222")
+
 write.csv(data.frame(a = 1:3, b = 4:6), "temp/file1.csv")
-write.csv(data.frame(a = 7:9, b = 10:12), "temp/subdir1/file2.csv")
-write.csv(data.frame(a = 9:11, b = 12:14), "temp/subdir2/file3.csv")
-file.create("temp/file4.txt")
+write.csv(data.frame(a = 7:9, b = 10:12), "temp/baggie/A004_SD001/20202/file2.csv")
+write.csv(data.frame(a = 9:11, b = 12:14), "temp/case/A005_SD020/file3.csv")
+file.create("temp/case/A005_SD020/file4.txt")
 ```
 
+Testing some code that can be added to the function
+
 ```{r}
-dframe <- list.files(path= here("Code", "temp"), full.names = TRUE, recursive = T, pattern = "\\.csv$") %>% 
-  lapply(read.csv) %>% 
+csv_list <- list.files(path= here("Code", "temp"), full.names = T, recursive = T, pattern = "\\.csv$")
+csv_list
+
+dframe <- lapply(csv_list, read.csv)  |>  
   bind_rows() 
 dframe
+
 ```
 
 
@@ -63,11 +81,63 @@ Ok that worked, but now we want to get rid of the X column and to add a variable
 
 This will allow the baggie and no baggie groups to have binary variable for analysis
 
+Let's look at how a loop could potentially select for .csv files only within the baggie or case folders (before writing the function:
+
+```{r}
+# make sure you have ran temp directory code chunk before running this code!!!!
+# create an empty vector that will hold the desired files
+final_list <- c()
+
+# create an empty vector that will hold the list of "baggie or case" that will turn into one of the variables
+bag_case <- c()
+
+# create an empty vector that will hold the name of the AM
+
+AM <-  c()
+
+# Lets get a list of all the .csvs first:
+csv_list <- list.files(path= here("Code", "temp"), full.names = T, recursive = T, pattern = "\\.csv$")
+csv_list
+
+# this is to check the loop that I will put into the function
+for(i in csv_list){
+  if(str_detect(i, "/baggie/")){
+    final_list <- c(final_list, i)
+    bag_case <- c(bag_case, "baggie")
+    AM <- c(AM, basename(dirname(dirname(i))))
+  } else if (str_detect(i, "/case/")){
+    final_list <- c(final_list, i)
+    bag_case <- c(bag_case, "case")
+    AM <- c(AM, basename(dirname(dirname(i))))
+  }
+}
+
+final_list
+bag_case
+AM
+
+```
+
+
+
+
 Also I want to require that tidyverse is loaded.
 
 Possibly return the dataframe and write the csv
 
 ```{r}
-AM_baggie_csv <- 
+AM_baggie_csv <- function(path, csv = F){
+  # start with making sure that tidyverse is turned on
+  require(tidyverse)
+  
+  # Use the same format as in `combine_csv` but now use map_dfr to add a 
+  csv_list <- list.files(path = path, recursive = TRUE, pattern = "\\.csv$", full.names = TRUE) |> 
+    map_dfr(read.csv, .id = "SourceFile") # both reads in the 
+  
+  
+  
+  
+  return(csv_list)
+}
 ```
 
