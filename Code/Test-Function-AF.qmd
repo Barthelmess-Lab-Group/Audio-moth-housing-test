@@ -56,6 +56,7 @@ Test the function:
 ```{r}
 test <- combine_csv(here("Code", "temp"))
 test
+unlink("temp", recursive = T)
 ```
 
 Ok that worked, but now we want to get rid of the X column and to add a variable that adds the sub directory into a column
@@ -63,6 +64,8 @@ Ok that worked, but now we want to get rid of the X column and to add a variable
 This will allow the baggie and no baggie groups to have binary variable for analysis
 
 Also I want to require that tidyverse is loaded.
+
+Possibly return the dataframe and write the csv
 
 ```{r}
 AM_baggie_csv <- 
