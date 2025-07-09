@@ -1,5 +1,5 @@
 ---
-title: "Test-Function_AF"
+title: "Test-Function-AF"
 format: html
 ---
 
@@ -17,20 +17,54 @@ I will use some more simplistic functions and stuff to test these
 First try:
 
 ```{r}
-combined_csv <- function(path = "."){
+combine_csv <- function(path){
   # create a list of all the csv files in the given directory
   # use list.files() and make it recursive to go through sub-directories
-  csv_list <- list.files(path = path, recursive = TRUE, pattern = "//.csv$", full.names = TRUE)
-  
-  # read in each csv in the list
-  df_list <- lapply(csvs, read.csv)
-  
-  # combine all the data frames in the list
-  # this only works if all the columns are the same
-  combined_df <- do.call(rbind, df_list)
-  
-  return(combined_df)
+  csv_list <- list.files(path = path, recursive = TRUE, pattern = "\\.csv$", full.names = TRUE) |> 
+    lapply(read.csv) |>  
+    bind_rows()
+  return(csv_list)
 }
 ```
 
+
+Create a dummy "data" directory and some csv files for testing:
+
+```{r}
+dir.create("temp")
+dir.create("temp/subdir1")
+dir.create("temp/subdir2")
+write.csv(data.frame(a = 1:3, b = 4:6), "temp/file1.csv")
+write.csv(data.frame(a = 7:9, b = 10:12), "temp/subdir1/file2.csv")
+write.csv(data.frame(a = 9:11, b = 12:14), "temp/subdir2/file3.csv")
+file.create("temp/file4.txt")
+```
+
+```{r}
+dframe <- list.files(path= here("Code", "temp"), full.names = TRUE, recursive = T, pattern = "\\.csv$") %>% 
+  lapply(read.csv) %>% 
+  bind_rows() 
+dframe
+```
+
+
+
+
+
+Test the function:
+
+```{r}
+test <- combine_csv(here("Code", "temp"))
+test
+```
+
+Ok that worked, but now we want to get rid of the X column and to add a variable that adds the sub directory into a column
+
+This will allow the baggie and no baggie groups to have binary variable for analysis
+
+Also I want to require that tidyverse is loaded.
+
+```{r}
+AM_baggie_csv <- 
+```
 
