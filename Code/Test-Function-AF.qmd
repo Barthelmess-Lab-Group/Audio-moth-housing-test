@@ -3,7 +3,7 @@ title: "Test-Function-AF"
 format: html
 ---
 
-Set things up
+## Set things up
 ```{r}
 rm(list = ls())
 library(tidyverse)
@@ -14,7 +14,7 @@ Here is where I am going to test different functions that will help me to figure
 
 I will use some more simplistic functions and stuff to test these
 
-First try:
+## First Function:
 
 ```{r}
 combine_csv <- function(path){
@@ -29,7 +29,9 @@ combine_csv <- function(path){
 ```
 
 
-Create a dummy "data" directory and some csv files for testing:
+## Data
+
+dummy "data" directory and some csv files for testing:
 
 ```{r}
 dir.create("temp")
@@ -49,7 +51,7 @@ dir.create("temp/case/A005_SD020/222222")
 
 write.csv(data.frame(a = 1:3, b = 4:6), "temp/file1.csv")
 write.csv(data.frame(a = 7:9, b = 10:12), "temp/baggie/A004_SD001/33333/file2.csv")
-write.csv(data.frame(a = 9:11, b = 12:14), "temp/case/A005_SD020/222222/file3.csv")
+write.csv(data.frame(a = 10:12, b = 13:15), "temp/case/A005_SD020/222222/file3.csv")
 file.create("temp/case/A005_SD020/file4.txt")
 ```
 
@@ -81,7 +83,9 @@ Ok that worked, but now we want to get rid of the X column and to add a variable
 
 This will allow the baggie and no baggie groups to have binary variable for analysis
 
-Let's look at how a loop could potentially select for .csv files only within the baggie or case folders (before writing the function:
+Let's look at how a loop could potentially select for .csv files only within the baggie or case folders (before writing the function):
+
+## Loop
 
 ```{r}
 # make sure you have ran temp directory code chunk before running this code!!!!
@@ -120,53 +124,91 @@ AM
 
 This loop works now I can add it to the function!
 
+## Final Function
 
 Also I want to require that tidyverse is loaded.
 
 Possibly return the dataframe and write the csv
 
 ```{r}
-AM_baggie_csv <- function(path, csv = F){
+AM_baggie_csv <- function(path, csv = F, csv_name = "baggie_test.csv"){
   
 # This function takes the output (CSVs) from BirdNet from 'baggie test' audio moth test and combines them into one data frame
-# It also allows for a 'master' CSV to be writen as part of the function as well, but for directly using the function in R there is no need to write the csv, so that's why it is a Boolean value
-# NOTE: currently the strings the loop looks for are hard coded, but this code can be generalized if need be. 
+# It also allows for a 'master' CSV to be written as part of the function as well, but for directly using the function in R there is no need to write the csv, so that's why it is a Boolean value
+# NOTE: This function is highly specific to the BirdNet output and the workflow we are using.
+# There is definitely a more general version of this function if need be
   
 # start with making sure that tidyverse is turned on
   require(tidyverse)
   
   
-# create an empty vector that will hold the desired files
-final_list <- c()
+# create an empty list that will hold the all the baggie files
+baggie_list <- list()
 
-# create an empty vector that will hold the list of "baggie or case" that will turn into one of the variables
-bag_case <- c()
+# create an empty list that will hold the all the case files
+case_list <- list()
 
-# create an empty vector that will hold the name of the AM
-AM <-  c()
+# create vectors to store all the baggie and case audiomoths
+AM_b <- c()
+AM_c <- c()
 
 # Lets get a list of all the .csvs first:
 csv_list <- list.files(path= here("Code", "temp"), full.names = T, recursive = T, pattern = "\\.csv$")
 
-# this is to check the loop that I will put into the function
-# This loop checks if 
+# This loop checks if the a csv file is in either the baggie or case folder and adds it to each respective list
 for(i in csv_list){
   if(str_detect(i, "/baggie/")){ 
-    final_list <- c(final_list, i)
-    bag_case <- c(bag_case, "baggie")
-    AM <- c(AM, basename(dirname(dirname(i))))
+    baggie_list <- c(baggie_list, i)
+    AM_b <- c(AM_b, basename(dirname(dirname(i))))
   } else if (str_detect(i, "/case/")){
-    final_list <- c(final_list, i)
+    case_list <- c(case_list, i)
     bag_case <- c(bag_case, "case")
-    AM <- c(AM, basename(dirname(dirname(i))))
+    AM_c <- c(AM_c, basename(dirname(dirname(i))))
   }
 }
 
 
+# Read in the baggie list 
+baggie_df <- lapply(baggie_list, read.csv) |>  
+  bind_rows()
 
+baggie$housing <- rep("baggie", length(baggie_df$X))
+
+
+case_df <- lapply(case_list, read.csv) |>  
+  bind_rows()
+
+# add the bag or case vector to the data frame
+dframe$housing <- bag_case
+
+# add the AM ID to the data frame
+dframe$AM_SD <-  AM
+
+# Remove the 'X' column
+dframe <- select(-X)
+
+# Now check if we want to write the csv
+
+if(csv == T){
+  write.csv(dframe, csv_name)
+}
   
   
-  return(csv_list)
+  return(dframe)
 }
 ```
+
+
+Let's check if it works!
+
+## Test Final Function
+
+```{r}
+AM_baggie_csv(here("Code", "temp"), csv = T, )
+```
+
+
+
+
+
 
