@@ -1,0 +1,113 @@
+---
+title: "intro-loops"
+format: html
+editor: visual
+---
+
+## Introduction to Loops
+
+Here is a little bit of background that might help you figure out how to create various control structures (i.e. loops).
+
+Let's start with our basic setup
+
+```{r}
+rm(list = ls())
+library(tidyverse)
+library(here)
+```
+
+Take a look in the Data folder and you will see a subfolder called "learn-loops", within which there are 3 files, creatively named "csv1.csv", "csv2.csv" and "csv3.csv".
+
+## Loops
+
+Imagine that there is a task you need to do many times. - Perhaps you need to filter your data into subsets and do a process to each subset of the data. - Maybe you need to go to a folder of files, read in each file, and append the contents to a new data frame.
+
+Whenever you need to do the same thing over and over again, you may find it useful to use a loop.
+
+Loops are a type of "control structure" that iterate a process for a set number of times.
+
+The structure of a loop is the following:
+
+```{r}
+#for (i in 1:length){
+#}
+
+#commented out so as not to break code - ignore #
+```
+
+Where `i` is the indexing variable. It does not have to be called `i` but can hold any value. The part `1:length` tells the loop how many times to run. `length` could be a number, or a variable representing a number.
+
+Here's an example. Let's print `Gus is a great dog!` 5 times.
+
+```{r}
+for (i in 1:5){
+  print("Gus is a great dog!")
+}
+```
+
+## Looping through a process in a data file
+
+What if we wanted to go through a set of csv files one at a time to read their data into a master data frame? We could do this with a loop.
+
+Take a look.
+
+First, let's get a list of all the files we need to loop through
+
+```{r}
+my_files <- list.files(here("Data/learn-loops"))
+```
+
+Now determine how many files we need to open
+
+```{r}
+num_files <- length(my_files)
+```
+
+Read in the first file and make the initial data frame from it
+
+```{r}
+df <- read.csv(here("Data/learn-loops/csv1.csv"))
+```
+
+Now let's write a loop to open each additional file and append each to the end of df
+
+```{r}
+for (i in 2:num_files){ #use 2 because we already read the first file
+  my_file <- read.csv(here(paste0("Data/learn-loops/", my_files[i])))
+  df <- rbind(df, my_file)
+}
+```
+
+Let's read in one of the `.csv` files in the `Data/learn-loops` folder.
+
+```{r}
+df <- read_csv(here("Data/learn-loops/csv1.csv"))
+```
+
+These data span the years 2022 - 2025. Imagine that we wanted to add a column called "Project_stage" and assign the following values:
+
+| Year | Project_stage |
+|------|---------------|
+| 2022 | Year one      |
+| 2023 | Year two      |
+| 2024 | Year three    |
+| 2025 | Year four     |
+
+We could do it with a loop! Take a look
+
+```{r}
+num_steps <- length(unique(df$Year)) #determine the number of times we need to filter the data
+df$Project_stage <- NA #create empty column in data frame
+my_years <- sort(unique(df$Year)) #create filtering variable and put in numeric order; notice it is the same length as there are unique years in df
+stages <- c("Year one", "Year two", "Year three", "Year four") #create variable to fill into df
+
+df <- df %>% arrange(Year)
+#now create object to receive the output of the loop
+for(i in 1:num_steps){ #start loop
+ tmp_df <- df %>% 
+   filter(Year == my_years[i])
+  #filter the data for the first instance of my_years
+  tmp_df$Project_stage <- stages[i] 
+  View(tmp_df)
+    }
+```
