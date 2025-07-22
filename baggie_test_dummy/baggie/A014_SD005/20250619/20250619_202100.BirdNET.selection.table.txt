@@ -1,2 +1,0 @@
-Selection	View	Channel	Begin Time (s)	End Time (s)	Low Freq (Hz)	High Freq (Hz)	Common Name	Species Code	Confidence	Begin Path	File Offset (s)
-1	Spectrogram 1	1	0	3	0	15000	nocall	nocall	1.0	/Volumes/NoCo_Audio/Summer 2025 AudioMoth Data/baggie_test/A014_SD005/20250619/20250619_202100.WAV	0
