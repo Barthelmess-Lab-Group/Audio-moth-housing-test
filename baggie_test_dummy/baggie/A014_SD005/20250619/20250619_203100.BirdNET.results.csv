@@ -1,0 +1,2 @@
+Start (s),End (s),Scientific name,Common name,Confidence,File,week,sensitivity,min_conf,species_list,model
+30.0,33.0,Poecile atricapillus,Black-capped Chickadee,0.8011,/Volumes/NoCo_Audio/Summer 2025 AudioMoth Data/baggie_test/A014_SD005/20250619/20250619_203100.WAV,-1,1.0,0.8,/private/var/folders/jt/s6b3rvb132b5d2qgpryht61r0000gq/T/gradio/e9478962427f9bb649bbc557e028cf774466c7026c69b5ded9f51419bcc49777/baggie_test_species_list.txt,BirdNET_GLOBAL_6K_V2.4_Model_FP32.tflite
