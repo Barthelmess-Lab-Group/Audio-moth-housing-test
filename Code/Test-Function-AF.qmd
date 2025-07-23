@@ -188,7 +188,9 @@ csv_list <- list.files(path = path, full.names = T, recursive = T, pattern = "\\
 
 # This loop checks if the a csv file is in either the baggie or case folder and adds it to each respective list
 for(i in csv_list){
-  if(str_detect(i, "/baggie/")){ 
+  if(nrow(read.csv(i)) == 0)
+    next
+  else if(str_detect(i, "/baggie/")){ 
     b_df <- read.csv(i)
     # find the AM from the path and add it as a column with the ID filled in
     AM_b <- dirname(i) |> dirname() |> basename()
@@ -199,7 +201,8 @@ for(i in csv_list){
     b_df$date <- rep(date_b, nrow(b_df))
     
     # update the list containing all the baggie AM data frames
-    baggie_list <- c(baggie_list, b_df)
+    # list() wraps the new dataframe as a new element in the list
+    baggie_list <- c(baggie_list, list(b_df)) 
     
   } else if (str_detect(i, "/case/")){
     c_df <- read.csv(i)
@@ -212,7 +215,7 @@ for(i in csv_list){
     c_df$date <- rep(date_c, nrow(c_df))
     
     # update the list containing all the baggie AM data frames
-    case_list <- c(case_list, c_df)
+    case_list <- c(case_list, list(c_df)) 
     
   }
 }
@@ -254,6 +257,69 @@ Let's check if it works!
 AM_baggie_csv(here("Code", "temp"))
 ```
 
+#### Test with real data
+
+```{r}
+AM_baggie_csv(here("baggie_test_dummy"))
+```
+
+Its not working with a sample of our actual data:
+
+Here I added some code to check if the file was empty and to wrap the addition to the list so that each data frame actually becomes a new element in the list.
+
+```{r}
+# create an empty list that will hold the all the baggie files
+baggie_list <- list()
+
+# create an empty list that will hold the all the case files
+case_list <- list()
+
+# Lets get a list of all the .csvs first:
+csv_list <- list.files(path = here("baggie_test_dummy"), full.names = T, recursive = T, pattern = "\\.csv$")
+
+# This loop checks if the a csv file is in either the baggie or case folder and adds it to each respective list
+for(i in csv_list){
+  # this checks if the data file is empty and if so moves to the next file
+  if(nrow(read.csv(i)) == 0)
+    next
+  else if(str_detect(i, "/baggie/")){ 
+    b_df <- read.csv(i)
+    # find the AM from the path and add it as a column with the ID filled in
+    AM_b <- dirname(i) |> dirname() |> basename()
+    b_df$AM_ID <- rep(AM_b, nrow(b_df))
+    
+    # Same here but using the folder name and converting it to a date
+    date_b <- dirname(i) |> basename() |> ymd()
+    b_df$date <- rep(date_b, nrow(b_df))
+    
+    # update the list containing all the baggie AM data frames
+    # list() wraps the next entry so that it becomes a new element in the list
+    baggie_list <- c(baggie_list, list(b_df))
+    
+  } else if (str_detect(i, "/case/")){
+    c_df <- read.csv(i)
+    # find the AM from the path and add it as a column with the ID filled in
+    AM_c <- dirname(i) |> dirname() |> basename()
+    c_df$AM_ID <- rep(AM_c, nrow(c_df))
+    
+    # Same here but using the folder name and converting it to a date
+    date_c <- dirname(i) |> basename() |> ymd()
+    c_df$date <- rep(date_c, nrow(c_df))
+    
+    # update the list containing all the baggie AM data frames
+    case_list <- c(case_list, list(c_df))
+    
+  }
+}
+
+
+#baggie_list
+
+# Read in the baggie list
+# I'm just chekcing where I orginally sae the error
+baggie_df <- bind_rows(baggie_list)
+baggie_df
+```
 
 
 

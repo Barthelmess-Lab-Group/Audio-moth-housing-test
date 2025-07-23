@@ -1,0 +1,2 @@
+Selection	View	Channel	Begin Time (s)	End Time (s)	Low Freq (Hz)	High Freq (Hz)	Common Name	Species Code	Confidence	Begin Path	File Offset (s)
+1	Spectrogram 1	1	6.0	9.0	0	15000	American Robin	amerob	0.8609	/Volumes/NoCo_Audio/Summer 2025 AudioMoth Data/baggie_test/A014_SD005/20250619/20250619_202900.WAV	6.0

@@ -1,0 +1,124 @@
+Value
+Acris crepitans_Northern Cricket Frog
+Anaxyrus americanus_American Toad
+Anaxyrus fowleri_Fowler's Toad
+Dryophytes versicolor_Gray Treefrog
+Lithobates catesbeianus_American Bullfrog
+Lithobates clamitans_Green Frog
+Lithobates palustris_Pickerel Frog
+Lithobates sylvaticus_Wood Frog
+Pseudacris crucifer_Spring Peeper
+Scaphiopus holbrookii_Eastern Spadefoot
+Pseudacris triseriata_Western Chorus Frog
+Lithobates septentrionalis_Mink Frog
+Lithobates pipiens_Northern Leopard Frog
+Human vocal_Human vocal
+Human non-vocal_Human non-vocal
+Human whistle_Human whistle
+Power tools_Power tools
+Siren_Siren
+Engine_Engine
+Gun_Gun
+Fireworks_Fireworks
+Noise_Noise
+Poecile atricapillus_Black-capped Chickadee
+Corvus brachyrhynchos_American Crow
+Turdus migratorius_American Robin
+Agelaius phoeniceus_Red-winged Blackbird
+Branta canadensis_Canada Goose
+Quiscalus quiscula_Common Grackle
+Melospiza melodia_Song Sparrow
+Cyanocitta cristata_Blue Jay
+Junco hyemalis_Dark-eyed Junco
+Anas platyrhynchos_Mallard
+Zenaida macroura_Mourning Dove
+Dryobates pubescens_Downy Woodpecker
+Sturnus vulgaris_European Starling
+Spinus tristis_American Goldfinch
+Sitta canadensis_Red-breasted Nuthatch
+Dryobates villosus_Hairy Woodpecker
+Larus delawarensis_Ring-billed Gull
+Corvus corax_Common Raven
+Sitta carolinensis_White-breasted Nuthatch
+Mergus merganser_Common Merganser
+Colaptes auratus_Northern Flicker
+Spizelloides arborea_American Tree Sparrow
+Haemorhous purpureus_Purple Finch
+Larus argentatus_Herring Gull
+Cathartes aura_Turkey Vulture
+Cardinalis cardinalis_Northern Cardinal
+Bucephala clangula_Common Goldeneye
+Lophodytes cucullatus_Hooded Merganser
+Bucephala albeola_Bufflehead
+Dryocopus pileatus_Pileated Woodpecker
+Columba livia_Rock Pigeon
+Aythya collaris_Ring-necked Duck
+Anas rubripes_American Black Duck
+Spinus pinus_Pine Siskin
+Haliaeetus leucocephalus_Bald Eagle
+Acanthis flammea_Common Redpoll
+Sayornis phoebe_Eastern Phoebe
+Meleagris gallopavo_Wild Turkey
+Aix sponsa_Wood Duck
+Bonasa umbellus_Ruffed Grouse
+Sphyrapicus varius_Yellow-bellied Sapsucker
+Regulus satrapa_Golden-crowned Kinglet
+Certhia americana_Brown Creeper
+Buteo jamaicensis_Red-tailed Hawk
+Charadrius vociferus_Killdeer
+Zonotrichia albicollis_White-throated Sparrow
+Falco sparverius_American Kestrel
+Megaceryle alcyon_Belted Kingfisher
+Gavia immer_Common Loon
+Molothrus ater_Brown-headed Cowbird
+Antigone canadensis_Sandhill Crane
+Ardea herodias_Great Blue Heron
+Circus hudsonius_Northern Harrier
+Passer domesticus_House Sparrow
+Anas crecca_Green-winged Teal
+Coccothraustes vespertinus_Evening Grosbeak
+Mergus serrator_Red-breasted Merganser
+Tachycineta bicolor_Tree Swallow
+Melanerpes carolinus_Red-bellied Woodpecker
+Troglodytes hiemalis_Winter Wren
+Aythya affinis_Lesser Scaup
+Haemorhous mexicanus_House Finch
+Scolopax minor_American Woodcock
+Baeolophus bicolor_Tufted Titmouse
+Plectrophenax nivalis_Snow Bunting
+Passerella iliaca_Fox Sparrow
+Falco columbarius_Merlin
+Sialia sialis_Eastern Bluebird
+Spizella passerina_Chipping Sparrow
+Mareca americana_American Wigeon
+Catharus guttatus_Hermit Thrush
+Corthylio calendula_Ruby-crowned Kinglet
+Nannopterum auritum_Double-crested Cormorant
+Larus marinus_Great Black-backed Gull
+Podilymbus podiceps_Pied-billed Grebe
+Setophaga coronata_Yellow-rumped Warbler
+Buteo lagopus_Rough-legged Hawk
+Eremophila alpestris_Horned Lark
+Melospiza georgiana_Swamp Sparrow
+Cygnus olor_Mute Swan
+Clangula hyemalis_Long-tailed Duck
+Anas acuta_Northern Pintail
+Podiceps auritus_Horned Grebe
+Zonotrichia leucophrys_White-crowned Sparrow
+Aythya marila_Greater Scaup
+Euphagus carolinus_Rusty Blackbird
+Pandion haliaetus_Osprey
+Melanitta perspicillata_Surf Scoter
+Aythya americana_Redhead
+Spatula clypeata_Northern Shoveler
+Melanitta americana_Black Scoter
+Gallinago delicata_Wilson's Snipe
+Somateria mollissima_Common Eider
+Accipiter striatus_Sharp-shinned Hawk
+Mareca strepera_Gadwall
+Canis latrans_Coyote
+Odocoileus virginianus_White-tailed Deer
+Sciurus carolinensis_Eastern Gray Squirrel
+Tamias striatus_Eastern Chipmunk
+Tamiasciurus hudsonicus_Red Squirrel
+Dog_Dog

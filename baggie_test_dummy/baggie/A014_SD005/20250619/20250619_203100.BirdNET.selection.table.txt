@@ -1,0 +1,2 @@
+Selection	View	Channel	Begin Time (s)	End Time (s)	Low Freq (Hz)	High Freq (Hz)	Common Name	Species Code	Confidence	Begin Path	File Offset (s)
+1	Spectrogram 1	1	30.0	33.0	0	15000	Black-capped Chickadee	bkcchi	0.8011	/Volumes/NoCo_Audio/Summer 2025 AudioMoth Data/baggie_test/A014_SD005/20250619/20250619_203100.WAV	30.0
