@@ -19,7 +19,10 @@ AM_baggie_csv <- function(path, csv = F, csv_name = "baggie_test.csv"){
   
   # This loop checks if the a csv file is in either the baggie or case folder and adds it to each respective list
   for(i in csv_list){
-    if(str_detect(i, "/baggie/")){ 
+    # checks if the file is an empty csv and if so skips to the next file in the list
+    if(nrow(read.csv(i)) == 0)
+      next
+    else if(str_detect(i, "/baggie/")){ 
       b_df <- read.csv(i)
       # find the AM from the path and add it as a column with the ID filled in
       AM_b <- dirname(i) |> dirname() |> basename()
@@ -30,7 +33,8 @@ AM_baggie_csv <- function(path, csv = F, csv_name = "baggie_test.csv"){
       b_df$date <- rep(date_b, nrow(b_df))
       
       # update the list containing all the baggie AM data frames
-      baggie_list <- c(baggie_list, b_df)
+      # list() wraps the new data frame as a new element in the list
+      baggie_list <- c(baggie_list, list(b_df)) 
       
     } else if (str_detect(i, "/case/")){
       c_df <- read.csv(i)
@@ -43,7 +47,7 @@ AM_baggie_csv <- function(path, csv = F, csv_name = "baggie_test.csv"){
       c_df$date <- rep(date_c, nrow(c_df))
       
       # update the list containing all the baggie AM data frames
-      case_list <- c(case_list, c_df)
+      case_list <- c(case_list, list(c_df)) 
       
     }
   }

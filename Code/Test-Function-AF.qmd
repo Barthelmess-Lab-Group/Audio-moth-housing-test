@@ -265,6 +265,8 @@ AM_baggie_csv(here("baggie_test_dummy"))
 
 Its not working with a sample of our actual data:
 
+Here I added some code to check if the file was empty and to wrap the addition to the list so that each data frame actually becomes a new element in the list.
+
 ```{r}
 # create an empty list that will hold the all the baggie files
 baggie_list <- list()
@@ -277,6 +279,7 @@ csv_list <- list.files(path = here("baggie_test_dummy"), full.names = T, recursi
 
 # This loop checks if the a csv file is in either the baggie or case folder and adds it to each respective list
 for(i in csv_list){
+  # this checks if the data file is empty and if so moves to the next file
   if(nrow(read.csv(i)) == 0)
     next
   else if(str_detect(i, "/baggie/")){ 
@@ -290,6 +293,7 @@ for(i in csv_list){
     b_df$date <- rep(date_b, nrow(b_df))
     
     # update the list containing all the baggie AM data frames
+    # list() wraps the next entry so that it becomes a new element in the list
     baggie_list <- c(baggie_list, list(b_df))
     
   } else if (str_detect(i, "/case/")){
