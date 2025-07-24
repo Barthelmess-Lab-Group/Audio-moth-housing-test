@@ -1,0 +1,174 @@
+---
+title: "Ada notes"
+format: html
+editor: visual
+---
+
+# Ada (SLU supercomputer) notes
+
+## 24 July 2025
+
+Deep appreciation to Matt Higham for showing us how to work on Ada and sharing a python script and a `.run` file he created for us to make a first attempt.
+
+This was our first attempt at running the Cornell Lab of Ornithology birdnet analyzer machine learning algorithm to assign identifications to the sounds picked up in the .wav files we collected on our audiomoths.
+
+Following the general instructions provided in Matt's file called `SLU_HPC_Instructions.html`, (see below for where to locate a copy of that file) we logged on to Ada (all three of us, Aidan, Erika and Liz, logged on separately and updated our passwords to make sure everyone's account was working - then we just worked from Erika's account).
+
+### Data
+
+We copied a very small subset of our data from our external hard drive to Ada using FileZilla for file transfer. We wanted to make a small instance of our larger directory set up, so we had the following structure created on Ada:
+
+directory called `baggie_test` with two subdirectories:
+
+-   `baggie` with two subdirectories for two audiomoths
+
+    -   `A004_SD013` which contained two subdirectories:
+
+        -   `20250624` which contained 63 `.wav` files
+
+        -   `20250623` which contained 5 `.wav` files
+
+    -   `A003_SD023` which contained two subdirectories:
+
+        -   `20250621` which contained 30 `.wav` files
+
+        -   `20250620` which contained 7 `.wav` files
+
+`case` with two subdirectories for two audiomoths
+
+```         
+-   `A001_SD007` which contained two subdirectories:
+
+    -   `20250624` which contained 83 `.wav` files
+
+    -   `20250625` which contained 36 `.wav` files
+
+-   `A002_SD030` which contained two subdirectories:
+
+    -   `20250625` which contained 102 `.wav` files
+
+    -   `20250626` which contained 87 `.wav` files
+    
+```
+
+This is a representation of how we have the directory structure on our external hard drive. We grabbed the first `N` files from each dated directory of `.wav` files.
+
+### Code for Ada
+
+We met with Matt Higham on 23 July 2025. He provided us with several files and walked us through how to access and then run python scripts on Ada, the SLU supercomputer ("HPC", whatever you want to call it).
+
+Copies of the files Matt provided are shared with the research team and are located as shared files in Erika's personal OneDrive in the "Lab Group" folder:
+
+`Lab Group/2024-2025/Summer 2025/ADA test/Files from matt`
+
+We modified some of those files (as described below) for our test. The modified files can be found at
+
+\``Lab Group/2024-2025/Summer 2025/ADA test/24 July 2025 test`
+
+#### Preparing the code files
+We modified Matt's python file and saved it as `analyze_single_folder24July2025.py`. Our modifications were straightforward and involved changing the folder path (line 8 of Matt's code) to a single directory so that line 8 reads:
+
+`folder_path = Path("/home/barthelmess/baggie_test/case/A002_SD030/20250626")`
+
+Note that, in Matt's code, it specified birdnet parameters as having a minimum confidence of 0.4 and a chunk_overlap_s of 0.0.
+
+Matt's script creates a single csv called `output.csv` that includes birdnet output for all of the different `.wav` folders in the single directory.
+
+Matt provided a second file called `test_birdnet.Run` that we also modified in the following ways and saved it as `test_birdnet24July2025.py`:
+
+-   line 2 - change job name to `test_24July2025_birdnet_analysis`
+
+-   line 4 - change email address to barthelmess\@stlawu.edu
+
+-   delete line 6, `#SBATCH -–time=01:00:00` so that Ada does not impose a time limit to the analysis
+
+-   changed line 18 so that the line `python analyze_single_folder.py` became `python analyze_single_folder24July2025.py`
+
+Once we had adjusted both the `.py` and `.Run` files, we used FileZilla to move them to Ada.
+
+### Running Birdnet on Ada
+
+General steps:
+
+1.  Check that python has all required components (e.g. birdnet) loaded
+2.  Call the `.Run` file to start the analysis
+
+To run birdnet on Ada, you need two files. One is the python script file (ending `.py`) that has the actual python code, and the other is a `.Run` file that gives Ada the instructions to run the python script.
+
+#### Test 1
+The python script Matt shared with us, called `analyze_single_folder.py`, is, as the name implies, designed to look at all the `.wav` files in a single directory an push them through birdnet. Thus, **our first test** was to simply see if we could get it to run on a single directory of `.wav` files that we copied to Ada.
+
+##### Check that python has all required componenets
+
+Following Matt's instructions, to make sure everything we needed was installed on Ada and working fine we took the following steps:
+
+-   At the command line, type `module load python` to "turn on" python followed by
+
+-   Again at the command line, type `python` to start python on Ada (and knew it was working when we saw the `>>>` python prompt).
+
+-   Matt's instructions were to then copy and run, one line at a time, the first 6 lines of code from `analyze_single_folder24July2025.py`.
+
+    -   When we did so, we ran into two problems running line 3 from the file:
+
+    -   When we ran line 3, `from birdnet import SpeciesPredictions, predict_species_within_audio_file`, we got an error that birdnet was not installed.
+
+        -   To fix it, we exited from python (`exit()`) and then ran
+
+        `pip install birdnet --user` at the terminal and birdnet installed smoothly.
+
+    -   However, when we then tried to run line 3 again, we got another error, which was that TensorRT was not installed, so, again at the terminal, we typed `pip install TensorRT` which also worked just fine.
+
+::: callout-tip
+Note that these problems should now be set for Erika (though she may need to update birdnet to get the newest model) since she was the logged in user on Ada, but that Liz and Aidan will need to repeat these steps the first time they attempt to run this on Ada to get birdnet and its dependencies installed under their accounts.
+:::
+
+After we fixed the problems resulting from running line 3 in our `analyze_single_folder24July2025.py` file, we were able to successfully run line 4 (`import time`) and line 6 (`import pandas as pd`) just fine.
+
+We exited python back to the terminal prompt.
+
+##### Call the `.Run` file to start the analysis
+
+Next, at the command line, to run the analysis we typed
+
+`SBATCH /home/barthelmess/test_birdnet24July2025.Run` to initiate the analysis (sbatch followed by the file path to the `.Run` file)
+
+We got an error message back that the file (Ada did not specify which file) had DOS line breaks and could not run.
+
+I suspect this was an issue for the following reason:
+
+-   When Matt sent us his files, he sent them over email. The security features on Outlook would not let us download the `.py` or `.Run` files.
+
+-   Matt therefore simply copy-pasted the content of those files as text into an email. Erika copy-pasted the text from the email into new files in VS Code, but likely copied unseen DOS line breaks.
+
+A quick google search showed us that to fix the problem, we could run a command in terminal to convert dos to unix line breaks.
+
+-   We typed `dos2unix /home/barthelmess/analyze_single_folder24July2025.py` which seemed to work. We attempted the analysis again, but go the same DOS line break error, so also converted the `.Run` file as well using the `dos2unix` command.
+
+-   This time, when we started the analysis, it worked!
+
+-   We started the job at 14:56:05
+
+-   The job ended at 15:07:19
+
+-   Elapsed time of about 11 minutes to crunch 87 `.wav` files
+
+-   After the processing the initial file, Ada was taking approx 7.4 seconds to process each `.wav` file.
+-   output from the analysis is `Lab Group/2024-2025/Summer 2025/ADA test/24 July 2025 test/output.csv`
+
+- details from the run are found in `Lab Group/2024-2025/Summer 2025/ADA test/24 July 2025 test/log20438.txt`
+
+#### Test 2
+After our successful run of a single directory of `.wav` files, we wanted to see if we could modify the `.py` file to have python look recursively through a directory of subdirectories, opening each and thus analyzing many folders of `.wav` files in one call.
+
+We did not spend much time on this. Basically, we:
+1. Adjusted the `.py` file in VS_CODE, renaming it as `analyze_recursive_test24July2025.py` by making the following changes:
+   - change line 8 to point to a directory of subdirectories rather than a directory containing only `.wav`files
+   - change line 8 to add `recursive=True` within the `list(folder_path.glob(".WAV", recursive=True))
+   
+2. Made a new `.Run` file, adjusting the project name and the `.py` file it should call, and saving it as `test_birdnet_recursive.Run`
+
+And then we called the `.Run` file as per instructions above. The job ended very quickly, and did not produce an output file. Examination of the log file indicated that the python code crashed at line 9, not recognizing the `recursive=True` line. So we need to revise this code to work recursively through folders.
+
+The log file documenting this run is found at 
+`Lab Group/2024-2025/Summer 2025/ADA test/24 July 2025 test/log20439.txt`
+
