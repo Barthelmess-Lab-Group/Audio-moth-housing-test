@@ -10,7 +10,17 @@ library(tidyverse)
 library(here)
 ```
 
-Our intention is to be able to read in a bunch of csv files that are outputs from BirdNet and evaluate them.
+Let's try running a birdnet model using the `birdnetR` package
 
-Now tweak this
+```{r}
+library(birdnetR)
+#tell R how to handle python dependencies
+reticulate::py_require()
+```
+
+Begin by intitalizing the TensorFloLite Model
+```{r}
+model <- birdnet_model_tflite("v2.4")
+```
+
 

@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.551">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Ada notes</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="Ada_notes_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Ada_notes_files/libs/quarto-html/quarto.js"></script>
+<script src="Ada_notes_files/libs/quarto-html/popper.min.js"></script>
+<script src="Ada_notes_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Ada_notes_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Ada_notes_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Ada_notes_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Ada_notes_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Ada_notes_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Ada_notes_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Ada notes</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="ada-slu-supercomputer-notes" class="level1">
+<h1>Ada (SLU supercomputer) notes</h1>
+<section id="july-2025" class="level2">
+<h2 class="anchored" data-anchor-id="july-2025">24 July 2025</h2>
+<p>Deep appreciation to Matt Higham for showing us how to work on Ada and sharing a python script and a <code>.run</code> file he created for us to make a first attempt.</p>
+<p>This was our first attempt at running the Cornell Lab of Ornithology birdnet analyzer machine learning algorithm to assign identifications to the sounds picked up in the .wav files we collected on our audiomoths.</p>
+<p>Following the general instructions provided in Matt’s file called <code>SLU_HPC_Instructions.html</code>, (see below for where to locate a copy of that file) we logged on to Ada (all three of us, Aidan, Erika and Liz, logged on separately and updated our passwords to make sure everyone’s account was working - then we just worked from Erika’s account).</p>
+<section id="data" class="level3">
+<h3 class="anchored" data-anchor-id="data">Data</h3>
+<p>We copied a very small subset of our data from our external hard drive to Ada using FileZilla for file transfer. We wanted to make a small instance of our larger directory set up, so we had the following structure created on Ada:</p>
+<p>directory called <code>baggie_test</code> with two subdirectories:</p>
+<ul>
+<li><p><code>baggie</code> with two subdirectories for two audiomoths</p>
+<ul>
+<li><p><code>A004_SD013</code> which contained two subdirectories:</p>
+<ul>
+<li><p><code>20250624</code> which contained 63 <code>.wav</code> files</p></li>
+<li><p><code>20250623</code> which contained 5 <code>.wav</code> files</p></li>
+</ul></li>
+<li><p><code>A003_SD023</code> which contained two subdirectories:</p>
+<ul>
+<li><p><code>20250621</code> which contained 30 <code>.wav</code> files</p></li>
+<li><p><code>20250620</code> which contained 7 <code>.wav</code> files</p></li>
+</ul></li>
+</ul></li>
+</ul>
+<p><code>case</code> with two subdirectories for two audiomoths</p>
+<pre><code>-   `A001_SD007` which contained two subdirectories:
+
+    -   `20250624` which contained 83 `.wav` files
+
+    -   `20250625` which contained 36 `.wav` files
+
+-   `A002_SD030` which contained two subdirectories:
+
+    -   `20250625` which contained 102 `.wav` files
+
+    -   `20250626` which contained 87 `.wav` files
+    </code></pre>
+<p>This is a representation of how we have the directory structure on our external hard drive. We grabbed the first <code>N</code> files from each dated directory of <code>.wav</code> files.</p>
+</section>
+<section id="code-for-ada" class="level3">
+<h3 class="anchored" data-anchor-id="code-for-ada">Code for Ada</h3>
+<p>We met with Matt Higham on 23 July 2025. He provided us with several files and walked us through how to access and then run python scripts on Ada, the SLU supercomputer (“HPC”, whatever you want to call it).</p>
+<p>Copies of the files Matt provided are shared with the research team and are located as shared files in Erika’s personal OneDrive in the “Lab Group” folder:</p>
+<p><code>Lab Group/2024-2025/Summer 2025/ADA test/Files from matt</code></p>
+<p>We modified some of those files (as described below) for our test. The modified files can be found at</p>
+<p>`<code>Lab Group/2024-2025/Summer 2025/ADA test/24 July 2025 test</code></p>
+</section>
+<section id="running-python-scripts-on-ada" class="level3">
+<h3 class="anchored" data-anchor-id="running-python-scripts-on-ada">Running Python scripts on Ada</h3>
+<p>To run birdnet on Ada, you need two files. One is the python script file (ending <code>.py</code>) that has the actual python code, and the other is a <code>.Run</code> file that gives Ada the instructions to run the python script.</p>
+</section>
+<section id="two-test-runs" class="level3">
+<h3 class="anchored" data-anchor-id="two-test-runs">Two test runs</h3>
+<p>We conducted two test runs on Ada. The python script Matt shared with us, called <code>analyze_single_folder.py</code>, is, as the name implies, designed to look at all the <code>.wav</code> files in a single directory an push them through birdnet. Thus, our first test was to simply see if we could get it to run on a single directory of <code>.wav</code> files that we copied to Ada.</p>
+<p>We modified Matt’s python file and saved it as <code>analyze_single_folder24July2025.py</code>. Our modifications were straightforward and involved changing the folder path (line 8 of Matt’s code) to a single directory so that line 8 reads:</p>
+<p><code>folder_path = Path("/home/barthelmess/baggie_test/case/A002_SD030/20250626")</code></p>
+<p>Note that, in Matt’s code, it specified birdnet parameters as having a minimum confidence of 0.4 and a chunk_overlap_s of 0.0.</p>
+<p>Matt’s script creates a single csv called <code>output.csv</code> that includes birdnet output for all of the different <code>.wav</code> folders in the single directory.</p>
+<p>Matt provided a second file called <code>test_birdnet.Run</code> that we also modified in the following ways and saved it as <code>test_birdnet24July2025.py</code>:</p>
+<ul>
+<li><p>line 2 - change job name to <code>test_24July2025_birdnet_analysis</code></p></li>
+<li><p>line 4 - change email address to barthelmess@stlawu.edu</p></li>
+<li><p>delete line 6, <code>#SBATCH -–time=01:00:00</code> so that Ada does not impose a time limit to the analysis</p></li>
+<li><p>changed line 18 so that the line <code>python analyze_single_folder.py</code> became <code>python analyze_single_folder24July2025.py</code></p></li>
+</ul>
+<p>Once we had adjusted both the <code>.py</code> and <code>.Run</code> files, we used FileZilla to move them to Ada.</p>
+<section id="implementation-in-ada" class="level4">
+<h4 class="anchored" data-anchor-id="implementation-in-ada">Implementation in Ada</h4>
+<p>General steps:</p>
+<ol type="1">
+<li>Check that python has all required components (e.g.&nbsp;birdnet) loaded</li>
+<li>Call the <code>.Run</code> file to start the analysis</li>
+</ol>
+<section id="check-that-python-has-all-required-componenets" class="level5">
+<h5 class="anchored" data-anchor-id="check-that-python-has-all-required-componenets">Check that python has all required componenets</h5>
+<p>Following Matt’s instructions, to make sure everything we needed was installed on Ada and working fine we took the following steps:</p>
+<ul>
+<li><p>At the command line, type <code>module load python</code> to “turn on” python followed by</p></li>
+<li><p>Again at the command line, type <code>python</code> to start python on Ada (and knew it was working when we saw the <code>&gt;&gt;&gt;</code> python prompt).</p></li>
+<li><p>Matt’s instructions were to then copy and run, one line at a time, the first 6 lines of code from <code>analyze_single_folder24July2025.py</code>.</p>
+<ul>
+<li><p>When we did so, we ran into two problems running line 3 from the file:</p></li>
+<li><p>When we ran line 3, <code>from birdnet import SpeciesPredictions, predict_species_within_audio_file</code>, we got an error that birdnet was not installed.</p>
+<ul>
+<li>To fix it, we exited from python (<code>exit()</code>) and then ran</li>
+</ul>
+<p><code>pip install birdnet --user</code> at the terminal and birdnet installed smoothly.</p></li>
+<li><p>However, when we then tried to run line 3 again, we got another error, which was that TensorRT was not installed, so, again at the terminal, we typed <code>pip install TensorRT</code> which also worked just fine.</p></li>
+</ul></li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Note that these problems should now be set for Erika (though she may need to update birdnet to get the newest model) since she was the logged in user on Ada, but that Liz and Aidan will need to repeat these steps the first time they attempt to run this on Ada to get birdnet and its dependencies installed under their accounts.</p>
+</div>
+</div>
+<p>After we fixed the problems resulting from running line 3 in our <code>analyze_single_folder24July2025.py</code> file, we were able to successfully run line 4 (<code>import time</code>) and line 6 (<code>import pandas as pd</code>) just fine.</p>
+<p>We exited python back to the terminal prompt.</p>
+</section>
+<section id="call-the-.run-file-to-start-the-analysis" class="level5">
+<h5 class="anchored" data-anchor-id="call-the-.run-file-to-start-the-analysis">Call the <code>.Run</code> file to start the analysis</h5>
+</section>
+</section>
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
